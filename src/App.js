@@ -9,7 +9,6 @@ import NavBar from './components/NavBar'
 import JumBoTron from './components/JumBoTron'
 import Footer from './components/Footer'
 import Spinner from './components/Spinner'
-import RangeSlider from './components/RangeSlider'
 
 //Object to convert from keys of MovieArea to it formatted title
 const cards = {
@@ -242,9 +241,9 @@ export default class App extends Component {
     //Return the page
     return (
       <div className='App'>
-        <NavBar searchMovie={this.searchMovie.bind(this)} ClickBtn={this.ClickBtn.bind(this)}></NavBar>
+        <NavBar parent={this} searchMovie={this.searchMovie.bind(this)} ClickBtn={this.ClickBtn.bind(this)}></NavBar>
         <JumBoTron movieList={this.state.trending} genre={this.state.genre}></JumBoTron>
-        <RangeSlider parent={this}></RangeSlider>
+        {/* <RangeSlider parent={this}></RangeSlider> */}
         <div className='movie-container'>{this.renderMovies()}</div>
         <Footer></Footer>
       </div >

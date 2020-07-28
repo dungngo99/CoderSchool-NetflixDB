@@ -180,7 +180,7 @@ export default class JumBoTron extends Component {
 
                         <Modal.Body>
                             <div className="embed-responsive embed-responsive-16by9">
-                                <ReactPlayer title="video" url={this.state[movie.id][0]} muted playing={true} width={'100%'} height={'100%'} loop={true} controls={true}></ReactPlayer>
+                                <ReactPlayer title="video" url={this.state[movie.id][0]} muted playing={true} width={'100%'} height={'100%'} loop={false} controls={true}></ReactPlayer>
                             </div>
                         </Modal.Body>
 

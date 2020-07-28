@@ -93,7 +93,7 @@ export default class MovieCard extends Component {
             let link = await curObj.getVideoURL(data.results)
 
             //Update the state attribute
-            curObj.setState({...this.state, [data.id]: link })
+            curObj.setState({ ...this.state, [data.id]: link })
         } catch (err) {
             console.log("Failed to get video", err)
         }
@@ -123,6 +123,8 @@ export default class MovieCard extends Component {
                                 {` ${this.props.movie.vote_average}`}
                             </p>
 
+                            <p className='text-muted dn-rating'>{`Popularity: ${this.props.movie.popularity.toFixed(1)}`}</p>
+
                             <p className='text-muted'>
                                 <Moment fromNow className='dn-time'>{this.props.movie.release_date}</Moment>
                             </p>
@@ -146,7 +148,7 @@ export default class MovieCard extends Component {
 
                         <Modal.Body>
                             <div className="embed-responsive embed-responsive-16by9">
-                                <ReactPlayer title="video" url={this.state[this.props.movie.id]} muted playing={true} width={'100%'} height={'100%'} loop={true} controls={true}></ReactPlayer>
+                                <ReactPlayer title="video" url={this.state[this.props.movie.id]} muted playing={true} width={'100%'} height={'100%'} loop={false} controls={true}></ReactPlayer>
                             </div>
                         </Modal.Body>
 

@@ -173,7 +173,7 @@ export default class MovieArea extends Component {
                 <p>{`Showing: ${this.props.movieList.results.length} of ${this.props.movieList.total_results}`}</p>
 
                 <div className='dn-movie-area' id={`movie-area-${this.key}`}>
-                    <div className='dn-movies' id={`movie-box-${this.key}`} style={{ 'width': `${25 * this.props.movieList.results.length}%` }}>
+                    <div className='dn-movies' id={`movie-box-${this.key}`} style={{ 'width': `${22 * this.props.movieList.results.length}%` }}>
                         {this.props.movieList.results.map((item, i) => {
                             return <MovieCard movie={item} genre={this.genre} key={`movie-${i}`}></MovieCard>
                         }
