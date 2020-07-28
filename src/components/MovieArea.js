@@ -43,7 +43,7 @@ export default class MovieArea extends Component {
         //Function will fire whenever scrolling hits its end
         parent.scroll(async function () {
             //Check if user has hit the end of scrollbar
-            if (Math.floor(parent.scrollLeft() + parent.width()) >= Math.floor(child.width())) {
+            if (Math.floor(parent.scrollLeft() + parent.width())+1 >= Math.floor(child.width())) {
                 //Try-catch block to handle Exception if failed to fetch data from API
                 //There are 2 kinds (endpoints=[search, movie]) of dataset that will be fetched
                 try {
@@ -173,7 +173,7 @@ export default class MovieArea extends Component {
                 <p>{`Showing: ${this.props.movieList.results.length} of ${this.props.movieList.total_results}`}</p>
 
                 <div className='dn-movie-area' id={`movie-area-${this.key}`}>
-                    <div className='dn-movies' id={`movie-box-${this.key}`} style={{ 'width': `${22 * this.props.movieList.results.length}%` }}>
+                    <div className='dn-movies' id={`movie-box-${this.key}`} style={{ 'width': `${300 * this.props.movieList.results.length}px` }}>
                         {this.props.movieList.results.map((item, i) => {
                             return <MovieCard movie={item} genre={this.genre} key={`movie-${i}`}></MovieCard>
                         }

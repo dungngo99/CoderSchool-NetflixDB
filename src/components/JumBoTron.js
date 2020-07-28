@@ -170,9 +170,9 @@ export default class JumBoTron extends Component {
      * Function to render modals for all movies
      */
     getModals(){
-        return this.movieList.map((movie) => {
+        return this.movieList.map((movie, index) => {
             return (
-                <Modal size='lg' show={this.state[movie.id][1]} onHide={() => this.handleClose(movie)} dialogClassName="dn-modal" centered>
+                <Modal key={`modal-${index}`} size='lg' show={this.state[movie.id][1]} onHide={() => this.handleClose(movie)} dialogClassName="dn-modal" centered>
                     <div className='dn-modal-box'>
                         <Modal.Header className='dn-modal-head' closeButton>
                             <Modal.Title>Trailer</Modal.Title>
