@@ -9,6 +9,10 @@ const override = css`
 `;
 
 export default class Spinner extends React.Component {
+  /**
+   * Constructor to initialize Spinner object
+   * @param {object} props 
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -16,16 +20,14 @@ export default class Spinner extends React.Component {
     };
   }
 
+  /**
+   * Function to render the page again
+   */
   render() {
     return (
       <div className="dn-sweet-loading">
-        <DotLoader
-          css={override}
-          color={'red'}
-          size={150}
-          loading={this.state.loading}
-        />
-        <h2 style={{'color':'white'}}>Please wait for a few seconds...</h2>
+        <DotLoader css={override} color={'red'} size={150} loading={this.state.loading} />
+        <h2 style={{ 'color': 'white' }}>Please wait for a few seconds...</h2>
       </div>
     );
   }

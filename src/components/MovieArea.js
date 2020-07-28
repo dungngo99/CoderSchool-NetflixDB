@@ -4,19 +4,17 @@ import $ from 'jquery'
 
 //Object MovieArea to store a list of MovieCard Objects
 export default class MovieArea extends Component {
+    /**
+     * Constructor to initialize the MovieArea object
+     * Attributes:
+     *  1. genre (from App): the list of genres
+     *  2. type (from App): the title of each MovieArea
+     *  4. key (from App): key that consistent with App's key -> used to update App's state attribute whenever new data is fetched from children
+     *  5. page (from App - default to be 1): keep track of number of pages that has been fetched
+     *  6. parent (from App): a connection to parent (App object) -> used to updated App's state attribute whenever new data is fetched from children
+     *  7. issUpdateParent (from MovieArea): keep track whether App's state has been updated.
+     */
     constructor(props) {
-        /**
-         * Constructor to initialize the MovieArea object
-         * It will host all attributes that are used during the lifecycle of this component
-         * Attributes:
-         *  1. genre (from App): the list of genres
-         *  2. type (from App): the title of each MovieArea
-         *  4. key (from App): key that consistent with App's key -> used to update App's state attribute whenever new data is fetched from children
-         *  5. page (from App - default to be 1): keep track of number of pages that has been fetched
-         *  6. parent (from App): a connection to parent (App object) -> used to updated App's state attribute whenever new data is fetched from children
-         *  7. issUpdateParent (from MovieArea): keep track whether App's state has been updated.
-         */
-
         //Call superclass's constructor
         super(props)
 
@@ -28,18 +26,16 @@ export default class MovieArea extends Component {
         this.parent = props.parent
         this.isUpdateParent = false
 
-        //state attribute of Child object
-        //Attributes: key and parentData
+        //State has attributes: parentData
         this.state = {
             parentData: this.props.movieList,
         }
     }
 
+    /**
+    * EventListener will call function fetchMovie() whenever user hits the end of sizebar
+    */
     addJquery(curObj) {
-        /**
-        * EventListener will call function fetchMovie() whenever user hits the end of sizebar
-        */
-
         //Attributes that are used
         let parent = $(`#movie-area-${curObj.key}`).first()
         let child = $(`#movie-box-${curObj.key}`).first()
@@ -51,9 +47,9 @@ export default class MovieArea extends Component {
                 //Try-catch block to handle Exception if failed to fetch data from API
                 //There are 2 kinds (endpoints=[search, movie]) of dataset that will be fetched
                 try {
-                    if (['popular', 'top_rated', 'upcoming', 'now_playing'].includes(curObj.key)){
+                    if (['popular', 'top_rated', 'upcoming', 'now_playing'].includes(curObj.key)) {
                         curObj.fetchMovie('movie', curObj.key, curObj.page + 1, null, curObj)
-                    }else{
+                    } else {
                         curObj.fetchMovie('search', 'movie', curObj.page + 1, curObj.key, curObj)
                     }
                 } catch (err) {
@@ -63,6 +59,10 @@ export default class MovieArea extends Component {
         })
     }
 
+    /**
+     * Function to return a deep copy of inObject
+     * @param {object} inObject 
+     */
     deepCopy(inObject) {
         let outObject, value, key
 
@@ -83,13 +83,13 @@ export default class MovieArea extends Component {
         return outObject
     }
 
+    /**
+     *Function to update attributes of child(MovieArea) state attributes
+     */
     updateMovies(data, curObj) {
-        /**
-         *Function to update attributes of child(MovieArea) state attributes 
-         */
         //Define new child's movie list and parent node
         let newMovies = this.props.movieList.results.concat(data.results)
-        let newParent = this.deepCopy(curObj.state.parentData)
+        let newParent = curObj.deepCopy(curObj.state.parentData)
 
         //Update the child and parent's properties
         newParent['results'] = newMovies
@@ -97,14 +97,13 @@ export default class MovieArea extends Component {
         curObj.page++
 
         //Call setSate child's state to rerender
-        curObj.setState({ parentData: newParent})
+        curObj.setState({ parentData: newParent })
     }
 
+    /**
+     * Function to fetch movies based on endpoints and sub_endpoints
+     */
     async fetchMovie(endpoint = 'movie', sub_endpoint = 'upcoming', page = 1, keyword = 3417, curObj) {
-        /**
-         * Function to fetch movies based on endpoints and sub_endpoints
-         */
-
         //Get the API KEY
         let apiKey = process.env.REACT_APP_APIKEY
 
@@ -138,39 +137,41 @@ export default class MovieArea extends Component {
             //Update the parent data
             this.updateMovies(data, curObj)
         } catch (err) {
-            alert(JSON.stringify(err))
+            alert(err)
         }
     }
 
+    /**
+     * This event will fire after component rendered and add EventListener based on Jquery to the component
+     */
     componentDidMount() {
-        /**
-         * This event will fire after component rendered and add EventListener based on Jquery to the component
-         */
         this.addJquery(this)
     }
 
+    /**
+     * This function to update the parent's state attribute after MovieArea is updated
+     */
     componentDidUpdate() {
-        /**
-         * This function to update the parent's state attribute after MovieArea is updated
-         */
         if (this.isUpdateParent) {
             //Switch isUpdateParent back to false to prepare for next fetch
             this.isUpdateParent = false
 
             //Update the parent's state
-            this.parent.setState({ 
-                ...this.parent.state, [this.key]: this.state.parentData, functionality: 'load-more'})
+            this.parent.setState({
+                ...this.parent.state, [this.key]: this.state.parentData, functionality: 'load-more'
+            })
         }
     }
 
+    /**
+     * Function to render the page again
+     */
     render() {
-        /**
-         * Function to render the page again
-         */
         return (
             <div>
                 <h2 className='dn-moviearea-title'>{this.type}</h2>
                 <p>{`Showing: ${this.props.movieList.results.length} of ${this.props.movieList.total_results}`}</p>
+
                 <div className='dn-movie-area' id={`movie-area-${this.key}`}>
                     <div className='dn-movies' id={`movie-box-${this.key}`} style={{ 'width': `${25 * this.props.movieList.results.length}%` }}>
                         {this.props.movieList.results.map((item, i) => {

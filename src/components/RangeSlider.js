@@ -4,19 +4,34 @@ import InputRange from 'react-input-range'
 import 'react-input-range/lib/css/index.css'
 
 class RangeSlider extends Component {
+  /**
+   * Constructor to initialize the Range slider object
+   * @param {object} props 
+   */
   constructor(props) {
+    //Call superclass constructor
     super(props)
+
+    //Add a link to parent object (App)
     this.parent = this.props.parent
+
+    //State
     this.state = {
       value: {
         min: 2,
         max: 10,
       }
     }
+
+    //Other attributes
     this.min = 2
     this.max = 10
   }
 
+  /**
+   * Function to make a deep copy of current object
+   * @param {object} inObject 
+   */
   deepCopy(inObject) {
     let outObject, value, key
 
@@ -37,13 +52,22 @@ class RangeSlider extends Component {
     return outObject
   }
 
+  /**
+   * Function to update the value of a state
+   * @param {object} value 
+   */
   handleChange(value) {
     this.setState({ value: value })
   };
 
+  /**
+   * Function to update parent object when user sides
+   */
   updateParent() {
+    //Make a deep copy of current parent object
     let objStore = this.deepCopy(this.parent.state)
 
+    //Loop through each key and update filtered lists
     for (let key in objStore) {
       if (['countDown', 'dummy', 'tempMovieList', 'genre', 'search', 'functionality'].includes(key)) continue
 
@@ -52,9 +76,13 @@ class RangeSlider extends Component {
       })
     }
 
+    //Update parent object
     this.parent.setState({ ...this.parent.state, tempMovieList: objStore, functionality: 'search' })
   }
 
+  /**
+   * Function to render the page
+   */
   render() {
     return (
       <div className='dn-slider'>

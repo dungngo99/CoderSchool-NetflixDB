@@ -3,24 +3,40 @@ import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse,
 import { Button, FormControl } from 'react-bootstrap'
 import { BrowserRouter as Router } from 'react-router-dom';
 
+//Make a Navbar object
 class FullPageIntroWithFixedTransparentNavbar extends React.Component {
+    /**
+     * Constructor to initialize the NavBar object
+     * @param {object} props 
+     */
     constructor(props) {
+        //Call super-class constructor
         super(props);
+
+        //State attribute
         this.state = {
             collapse: false,
             isWideEnough: false,
         };
+
+        //Attributes
         this.onClick = this.onClick.bind(this);
         this.searchMovie = this.props.searchMovie
         this.ClickBtn = this.props.ClickBtn
     }
 
+    /**
+     * Function render next Carousel whenever user clicks next
+     */
     onClick() {
         this.setState({
             collapse: !this.state.collapse,
         });
     }
 
+    /**
+     * Function to render the page
+     */
     render() {
         return (
             <div>
@@ -52,6 +68,7 @@ class FullPageIntroWithFixedTransparentNavbar extends React.Component {
                                     <div className='dn-user-face'><i className="far fa-smile-beam"></i></div>
                                 </div>
                             </MDBCollapse>
+                            
                         </MDBNavbar>
                     </Router>
                 </header>

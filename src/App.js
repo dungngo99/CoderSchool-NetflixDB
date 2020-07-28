@@ -1,7 +1,9 @@
+//import React
 import './App.css';
 import React, { Component } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-rangeslider/lib/index.css'
+
+//Import components
 import MovieArea from './components/MovieArea'
 import NavBar from './components/NavBar'
 import JumBoTron from './components/JumBoTron'
@@ -11,30 +13,11 @@ import RangeSlider from './components/RangeSlider'
 
 //Object to convert from keys of MovieArea to it formatted title
 const cards = {
-  'upcoming': 'Upcoming',
-  'popular': 'Popular',
-  'now_playing': 'Now Playing',
-  'top_rated': 'Top rated',
-  'trending': 'Trending',
-  'genre': 'Genre',
-  'action': 'Action',
-  'adventure': 'Adventure',
-  'animation': 'Animation',
-  'comedy': 'Comedy',
-  'crime': 'Crime',
-  'documentary': 'Documentary',
-  'drama': 'Drama',
-  'family': 'Family',
-  'fantasy': 'Science Fiction and Fantasy',
-  'history': 'History',
-  'horror': 'Horror',
-  'mystery': 'Mystery',
-  'romance': 'Romance',
-  'thriller': 'Thriller',
-  'war': 'War',
-  'music': 'Music',
-  'western': 'Western',
-  'search': "Search for you"
+  'upcoming': 'Upcoming', 'popular': 'Popular', 'now_playing': 'Now Playing',
+  'top_rated': 'Top rated', 'trending': 'Trending', 'genre': 'Genre', 'action': 'Action', 
+  'adventure': 'Adventure', 'animation': 'Animation', 'comedy': 'Comedy', 'crime': 'Crime', 
+  'documentary': 'Documentary', 'drama': 'Drama', 'family': 'Family', 'fantasy': 'Science Fiction and Fantasy', 'history': 'History', 'horror': 'Horror', 'mystery': 'Mystery', 'romance': 'Romance', 
+  'thriller': 'Thriller', 'war': 'War', 'music': 'Music', 'western': 'Western', 'search': "Search for you"
 }
 
 //Object App (parent)
@@ -43,7 +26,11 @@ export default class App extends Component {
     /**
    * Constructor to initialize object App
    * Attributes:
-   * 1. state object that contains countDown and dummy
+   *  1. search (object): Store the fetched data
+   *  2. countDown (int): count the number pages that have been fetched
+   *  3. dummy (null): to prevent null error when fetching
+   *  4. tempMovieList (object): a temporary copy of state - updated constantly if users do search
+   *  5. functionality (string): indicate which action user has just done
    */
     super()
     this.state = {
@@ -55,16 +42,15 @@ export default class App extends Component {
     }
   }
 
+  /**
+   * Function to fetch movies based on endpoints and sub-endpoints from Movie DB API
+   * Parameters:
+   *  #endpoint (default to movie)
+   *  #sub_endpoint (defaultto upcoming)
+   *  #page (defaul to 1)
+   *  #keyword (default to 3417)
+   */
   async fetchMovie(endpoint = 'movie', sub_endpoint = 'upcoming', page = 1, keyword = 3417, input = null) {
-    /**
-     * Function to fetch movies based on endpoints and sub-endpoints from Movie DB API
-     * Parameters: 
-     *  endpoint (default to movie)
-     *  sub_endpoint (default to upcoming)
-     *  page (defaul to 1)
-     *  keyword (default to 3417)
-     */
-
     //API KEY from Environment settings
     let apiKey = process.env.REACT_APP_APIKEY
 
@@ -121,11 +107,10 @@ export default class App extends Component {
     }
   }
 
+  /**
+   * After render(), fetch the API by calling fetchMovie(). Here we will fetch data based on arguments passed to the function
+   */
   componentDidMount() {
-    /**
-     * After render(), fetch the API by calling fetchMovie(). Here we will fetch all data
-     */
-
     //Fetch different datasets based on sub-endpoints with endpoint 'movie'
     this.fetchMovie('movie', 'upcoming', 1)
     this.fetchMovie('movie', 'now_playing', 1)
@@ -154,6 +139,32 @@ export default class App extends Component {
     this.fetchMovie('search', 'movie', 1, 'search', 'boruto')
   }
 
+  /**
+   * Function to display MovieAreas
+   * #return an array of MovieArea object
+   */
+  renderMovies() {
+    //Set the variables to store movies
+    let Movies = null
+
+    //Check if we are going to take tempMovieList or state
+    if (this.state.functionality === null) Movies = this.state
+    else if (this.state.functionality === 'search') Movies = this.state.tempMovieList
+    else Movies = this.state
+
+    return Object.keys(Movies).map((key) => {
+      //We will only display certain MovieArea objects. If a MovieCard has the below keys won't be displayed
+      if (['dummy', 'genre', 'countDown', 'science fiction', 'tv movie', 'tempMovieList', 'functionality'].includes(key)) return ''
+
+      //Return any MovieArea whose key does not exist in above blacklist
+      return <MovieArea parent={this} mykey={`${key}`} key={`${cards[key]}`} type={`${cards[key]}`} movieList={Movies[key]} genre={this.state.genre}></MovieArea>
+    })
+  }
+
+  /**
+   * Function to make a deep copy of an object
+   * @param {object} inObject 
+   */
   deepCopy(inObject) {
     let outObject, value, key
 
@@ -174,13 +185,17 @@ export default class App extends Component {
     return outObject
   }
 
+  /**
+   * Function to update the current content based on real-time input value
+   * #Make constant fetch to API whenever user enter something into the text bar
+   * #Parameter:
+   *  1. e: input from Input tag
+   */
   searchMovie(e) {
-    /**
-     * Function to update the current content based on real-time input value
-     * Make constant fetch to API whenever user enter something into the text bar
-     */
     //Make a deep copy of current state object
     let objStore = this.deepCopy(this.state)
+
+    // console.log(e)
 
     //Filter the movies that contain input and update them to objStore
     for (let key in objStore) {
@@ -188,32 +203,38 @@ export default class App extends Component {
       objStore[key]['results'] = objStore[key]['results'].filter((movie) => movie.overview.includes(e))
     }
 
-    //Update tempMovieList in real-time
-    this.setState({ ...this.state, tempMovieList: objStore, functionality: 'search'})
+    // console.log(objStore)
+
+    //Update tempMovieList and functionality to search in real-time
+    this.setState({ ...this.state, tempMovieList: objStore, functionality: 'search' })
   }
 
+  /**
+   * Function to show the 'Search for you' MovieArea whenever user clicks Search button
+   * #This new MovieArea will be displayed permanently once the user clicked search
+   */
   ClickBtn() {
-    /**
-     * Function to show the 'Search for you' MovieArea whenever user clicks Search button
-     * This new MovieArea will be displayed permanently once the user clicked search
-     */
-
-    //Get the input and alert to user if they enter empty string
+    //Get the input
     let input = document.getElementById('dn-search-input').value
+
+    //Alert users if they enter empty string
     if (input === '') {
       alert("You have to enter something :)")
       return
     }
 
-    //Fetch the data and set state
+    //Fetch the data (add it to state of App)
     this.fetchMovie('search', 'movie', 1, 'search', input)
-    this.setState({...this.state, functionality: 'load-more'})
+
+    //Update functionality to indicate that user did load more
+    this.setState({ ...this.state, functionality: 'load-more' })
   }
 
+  /**
+   * Function to render the page after componentWillMount() or setState() event
+   */
   render() {
-    /**
-     * Function to render the page after componentWillMount() event or setState() event
-     */
+    //Keep spinning until finish render the page for first time
     if (this.state.countDown > 0) {
       return <Spinner></Spinner>
     }
@@ -224,23 +245,7 @@ export default class App extends Component {
         <NavBar searchMovie={this.searchMovie.bind(this)} ClickBtn={this.ClickBtn.bind(this)}></NavBar>
         <JumBoTron movieList={this.state.trending} genre={this.state.genre}></JumBoTron>
         <RangeSlider parent={this}></RangeSlider>
-
-        <div className='movie-container'>
-          {Object.keys(this.state).map((key) => {
-            //Check if we are going to take tempMovieList or this.state as an argument
-            let Movies = null
-            if (this.state.functionality === null) Movies = this.state
-            else if (this.state.functionality === 'search') Movies = this.state.tempMovieList
-            else Movies = this.state
-
-            //We will only display certain MovieArea objects. If a MovieCard has the below keys won't be display
-            if (['dummy', 'genre', 'countDown','science fiction', 'tv movie', 'tempMovieList', 'functionality'].includes(key)) return ''
-
-            //Return any MovieArea whose key does not exist in above blacklist
-            return <MovieArea parent={this} mykey={`${key}`} key={`${cards[key]}`} type={`${cards[key]}`} movieList={Movies[key]} genre={this.state.genre}></MovieArea>
-          })}
-        </div>
-
+        <div className='movie-container'>{this.renderMovies()}</div>
         <Footer></Footer>
       </div >
     )

@@ -269,3 +269,12 @@ ul{
   background: red !important;
   border: none !important;
 }
+
+.dn-modal-box{
+  background-color: black;
+  color: white;
+}
+
+.dn-modal-head, .dn-modal-footer{
+  
+}
