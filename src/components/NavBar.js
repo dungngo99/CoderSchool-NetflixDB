@@ -11,9 +11,6 @@ class FullPageIntroWithFixedTransparentNavbar extends React.Component {
      * @param {object} props 
      */
     constructor(props) {
-        //Call super-class constructor
-        super(props);
-
         //State attribute
         this.state = {
             collapse: false,
